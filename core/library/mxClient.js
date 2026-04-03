@@ -156,7 +156,7 @@ var mxClient =
 	 *
 	 * True if the current browser is Firefox.
 	 */
-  	IS_FF: typeof InstallTrigger !== 'undefined',
+	  IS_FF: navigator.userAgent.indexOf('Firefox/') >= 0,
   	
 	/**
 	 * Variable: IS_MT

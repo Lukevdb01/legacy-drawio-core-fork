@@ -386,17 +386,36 @@ EditorUi = function(editor, container, lightbox)
 			}
 			catch (e)
 			{
-				// ignores error in old versions of IE
+				if (window.console != null && typeof window.console.error === 'function')
+				{
+					window.console.error('EditorUi: failed to focus graph container on init', e);
+				}
 			}
 		}
 	
 	   	// Keeps graph container focused on mouse down
-	   	var graphFireMouseEvent = graph.fireMouseEvent;
+	   	const graphFireMouseEvent = graph.fireMouseEvent;
 	   	graph.fireMouseEvent = function(evtName, me, sender)
 	   	{
 	   		if (evtName == mxEvent.MOUSE_DOWN)
 	   		{
-	   			this.container.focus();
+	   			if (!this.isEditing())
+	   			{
+	   				// Some browsers require tabindex to be present to allow focusing a DIV.
+	   				this.container.setAttribute('tabindex', '-1');
+
+	   				try
+	   				{
+	   					this.container.focus();
+	   				}
+	   				catch (e)
+	   				{
+	   					if (window.console != null && typeof window.console.error === 'function')
+	   					{
+	   						window.console.error('EditorUi: failed to focus graph container on mouse down', e);
+	   					}
+	   				}
+	   			}
 	   		}
 	   		
 	   		graphFireMouseEvent.apply(this, arguments);

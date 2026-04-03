@@ -119,6 +119,50 @@ mxGraph.prototype.pageScale = 1;
 mxText.prototype.baseSpacingTop = 5;
 mxText.prototype.baseSpacingBottom = 1;
 
+// Limits label hit testing to the cell bounds when clipping is enabled.
+// This avoids oversized/transparent HTML label regions consuming events.
+(function()
+{
+	const baseIsLabelEvent = mxCellRenderer.prototype.isLabelEvent;
+
+	mxCellRenderer.prototype.isLabelEvent = function(state, evt)
+	{
+		if (!baseIsLabelEvent.apply(this, arguments) || state == null || evt == null)
+		{
+			return false;
+		}
+
+		const graph = (state.view != null) ? state.view.graph : null;
+
+		if (graph == null)
+		{
+			return true;
+		}
+
+		const overflow = state.style[mxConstants.STYLE_OVERFLOW];
+		const isClipped = graph.isLabelClipped(state.cell) ||
+			(state.text != null && state.text.clipped) ||
+			overflow == 'hidden' || overflow == 'fill' || overflow == 'width';
+
+		if (!isClipped)
+		{
+			return true;
+		}
+
+		const source = mxEvent.getSource(evt);
+
+		if (state.text != null && state.text.node != null && source != state.text.node &&
+			!mxUtils.isAncestorNode(state.text.node, source))
+		{
+			return true;
+		}
+
+		const pt = mxUtils.convertPoint(graph.container, mxEvent.getClientX(evt), mxEvent.getClientY(evt));
+
+		return mxUtils.contains(state, pt.x, pt.y);
+	};
+})();
+
 // Keeps edges between relative child cells inside parent
 mxGraphModel.prototype.ignoreRelativeEdgeParent = false;
 
@@ -147,6 +191,11 @@ mxGraphView.prototype.setUnit = function(unit)
 
 // Alternative text for unsupported foreignObjects
 mxSvgCanvas2D.prototype.foAltText = '[Not supported by viewer]';
+
+if (window.WEBKIT_NO_FO === true)
+{
+	mxClient.NO_FO = mxClient.NO_FO || mxClient.IS_SF || mxClient.IS_GC;
+}
 
 // Hook for custom constraints
 mxShape.prototype.getConstraints = function(style, w, h)

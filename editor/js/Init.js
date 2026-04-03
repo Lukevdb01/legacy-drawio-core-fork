@@ -17,6 +17,10 @@ window.STYLE_PATH = window.STYLE_PATH || 'editor/styles';
 window.CSS_PATH = window.CSS_PATH || 'editor/styles';
 window.OPEN_FORM = window.OPEN_FORM || 'open.html';
 
+// Optional compatibility mode for WebKit HTML labels.
+// Enable via ?webkitNoFo=1 to disable foreignObject usage in Safari/Chrome.
+window.WEBKIT_NO_FO = window.WEBKIT_NO_FO || urlParams['webkitNoFo'] == '1';
+
 // Sets the base path, the UI language via URL param and configures the
 // supported languages to avoid 404s. The loading of all core language
 // resources is disabled as all required resources are in grapheditor.
