@@ -427,6 +427,9 @@ div.mxWindow .geButton {
 	background:#e5e5e5;
 	border-top:1px solid #c0c0c0;
 }
+.geFooter {
+	height:100%;
+}
 .geFooterContainer a {
 	display:inline-block;
 	box-sizing:border-box;
@@ -439,14 +442,25 @@ div.mxWindow .geButton {
 }
 .geFooterContainer table {
 	border-collapse:collapse;
-	margin:0 auto;
+	margin:0;
+	width:100%;
+	table-layout:fixed;
 }
 .geFooterContainer td {
+	height:26px;
+	padding:0 10px;
 	border-left:1px solid #c0c0c0;
 	border-right:1px solid #c0c0c0;
+	text-align:center;
 }
-.geFooterContainer td:hover {
+.geFooterContainer td.geFooterLink:hover {
 	background-color: #b3b3b3;
+}
+.geFooterContainer .geFooterText {
+	font-size:12px;
+	color:#4a4a4a;
+	font-weight:bold;
+	white-space:nowrap;
 }
 .geHsplit {
 	cursor:col-resize;

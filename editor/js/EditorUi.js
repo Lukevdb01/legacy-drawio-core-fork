@@ -1015,6 +1015,16 @@ EditorUi.prototype.footerHeight = 28;
 EditorUi.prototype.sidebarFooterHeight = 34;
 
 /**
+ * URL of the fork repository shown in the footer.
+ */
+EditorUi.prototype.forkGithubUrl = window.FORK_GITHUB_URL || 'https://github.com/Lukevdb01/legacy-drawio-core-fork';
+
+/**
+ * URL of the original upstream project shown in the footer.
+ */
+EditorUi.prototype.originalProjectUrl = window.ORIGINAL_PROJECT_URL || 'https://github.com/jgraph/mxgraph';
+
+/**
  * Specifies the position of the horizontal split bar. Default is 240 or 118 for
  * screen widths <= 640px.
  */
@@ -3912,7 +3922,44 @@ EditorUi.prototype.createFormat = function(container)
  */
 EditorUi.prototype.createFooter = function()
 {
-	return this.createDiv('geFooter');
+	var footer = this.createDiv('geFooter');
+	var table = document.createElement('table');
+	var row = document.createElement('tr');
+	var year = (new Date()).getFullYear();
+
+	var createTextCell = function(text)
+	{
+		var td = document.createElement('td');
+		var span = document.createElement('span');
+		span.className = 'geFooterText';
+		mxUtils.write(span, text);
+		td.appendChild(span);
+
+		return td;
+	};
+
+	var createLinkCell = function(label, href)
+	{
+		var td = document.createElement('td');
+		td.className = 'geFooterLink';
+		var link = document.createElement('a');
+		link.setAttribute('href', href);
+		link.setAttribute('target', '_blank');
+		link.setAttribute('rel', 'noopener noreferrer');
+		mxUtils.write(link, label);
+		td.appendChild(link);
+
+		return td;
+	};
+
+	row.appendChild(createTextCell('\u00a9 ' + year + ' Lukevdb01'));
+	row.appendChild(createLinkCell('Fork GitHub', this.forkGithubUrl));
+	row.appendChild(createLinkCell('Original mxGraph', this.originalProjectUrl));
+	row.appendChild(createTextCell('Original library by JGraph Ltd'));
+	table.appendChild(row);
+	footer.appendChild(table);
+
+	return footer;
 };
 
 /**
